@@ -1,4 +1,4 @@
-@description('Required. The name of Cognitive Services account.')
+@description('Required. The name of Cognitive Services account')
 param name string
 
 @description('Required. Kind of the Cognitive Services. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'sku\' for your Azure region.')
@@ -70,17 +70,17 @@ param diagnosticEventHubAuthorizationRuleId string = ''
 @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
 param diagnosticEventHubName string = ''
 
-@description('Conditional. Subdomain name used for token-based authentication. Required if \'networkAcls\' are set.')
+@description('Optional. Subdomain name used for token-based authentication. Required if \'networkAcls\' are set.')
 param customSubDomainName string = ''
 
-@description('Optional. Whether or not public endpoint access is allowed for this account.')
+@description('Optional. Subdomain name used for token-based authentication. Must be set if \'networkAcls\' are set.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
 param publicNetworkAccess string = 'Enabled'
 
-@description('Optional. Service endpoint object information.')
+@description('Optional. Service endpoint object information')
 param networkAcls object = {}
 
 @description('Optional. Enables system assigned managed identity on the resource.')
@@ -90,17 +90,17 @@ param systemAssignedIdentity bool = false
 param userAssignedIdentities object = {}
 
 @allowed([
-  ''
   'CanNotDelete'
+  'NotSpecified'
   'ReadOnly'
 ])
 @description('Optional. Specify the type of lock.')
-param lock string = ''
+param lock string = 'NotSpecified'
 
 @description('Optional. Configuration Details for private endpoints.')
 param privateEndpoints array = []
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
 param roleAssignments array = []
 
 @description('Optional. Tags of the resource.')
@@ -115,7 +115,7 @@ param apiProperties object = {}
 @description('Optional. Allow only Azure AD authentication.')
 param disableLocalAuth bool = false
 
-@description('Optional. Properties to configure encryption.')
+@description('Optional. Properties to configure encryption')
 param encryption object = {}
 
 @description('Optional. Resource migration token.')
@@ -173,8 +173,6 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
   }
 }]
 
-var enableReferencedModulesTelemetry = false
-
 var identityType = systemAssignedIdentity ? (!empty(userAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(userAssignedIdentities) ? 'UserAssigned' : 'None')
 
 var identity = identityType != 'None' ? {
@@ -224,11 +222,11 @@ resource cognitiveServices 'Microsoft.CognitiveServices/accounts@2021-10-01' = {
   }
 }
 
-resource cognitiveServices_lock 'Microsoft.Authorization/locks@2017-04-01' = if (!empty(lock)) {
+resource cognitiveServices_lock 'Microsoft.Authorization/locks@2017-04-01' = if (lock != 'NotSpecified') {
   name: '${cognitiveServices.name}-${lock}-lock'
   properties: {
-    level: any(lock)
-    notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
+    level: lock
+    notes: (lock == 'CanNotDelete') ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
   }
   scope: cognitiveServices
 }
@@ -246,23 +244,17 @@ resource cognitiveServices_diagnosticSettingName 'Microsoft.Insights/diagnostics
   scope: cognitiveServices
 }
 
-module cognitiveServices_privateEndpoints '../../Microsoft.Network/privateEndpoints/deploy.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
+module cognitiveServices_privateEndpoints '.bicep/nested_privateEndpoint.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
   name: '${uniqueString(deployment().name, location)}-CognitiveServices-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.service
-    ]
-    name: contains(privateEndpoint, 'name') ? privateEndpoint.name : 'pe-${last(split(cognitiveServices.id, '/'))}-${privateEndpoint.service}-${index}'
-    serviceResourceId: cognitiveServices.id
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
-    location: reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: contains(privateEndpoint, 'lock') ? privateEndpoint.lock : lock
-    privateDnsZoneGroups: contains(privateEndpoint, 'privateDnsZoneGroups') ? privateEndpoint.privateDnsZoneGroups : []
-    roleAssignments: contains(privateEndpoint, 'roleAssignments') ? privateEndpoint.roleAssignments : []
-    tags: contains(privateEndpoint, 'tags') ? privateEndpoint.tags : {}
-    manualPrivateLinkServiceConnections: contains(privateEndpoint, 'manualPrivateLinkServiceConnections') ? privateEndpoint.manualPrivateLinkServiceConnections : []
-    customDnsConfigs: contains(privateEndpoint, 'customDnsConfigs') ? privateEndpoint.customDnsConfigs : []
+    privateEndpointResourceId: cognitiveServices.id
+    privateEndpointVnetLocation: (empty(privateEndpoints) ? 'dummy' : reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)
+    privateEndpointObj: {
+      name: '<<endpoint-name>>'
+      service: 'namespace'
+      subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>'
+    }
+    tags: tags
   }
 }]
 
@@ -277,20 +269,17 @@ module cognitiveServices_rbac '.bicep/nested_roleAssignments.bicep' = [for (role
   }
 }]
 
-@description('The name of the cognitive services account.')
+@description('The name of the cognitive services account')
 output name string = cognitiveServices.name
 
-@description('The resource ID of the cognitive services account.')
+@description('The resource ID of the cognitive services account')
 output resourceId string = cognitiveServices.id
 
-@description('The resource group the cognitive services account was deployed into.')
+@description('The resource group the cognitive services account was deployed into')
 output resourceGroupName string = resourceGroup().name
 
-@description('The service endpoint of the cognitive services account.')
+@description('The service endpoint of the cognitive services account')
 output endpoint string = cognitiveServices.properties.endpoint
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedPrincipalId string = systemAssignedIdentity && contains(cognitiveServices.identity, 'principalId') ? cognitiveServices.identity.principalId : ''
-
-@description('The location the resource was deployed into.')
-output location string = cognitiveServices.location

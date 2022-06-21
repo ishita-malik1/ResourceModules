@@ -1,86 +1,75 @@
-// ================ //
-// Parameters       //
-// ================ //
-@sys.description('Required. The name of the machine learning workspace.')
+@description('Required. The name of the machine learning workspace.')
 param name string
 
-@sys.description('Optional. Location for all resources.')
+@description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@sys.description('Required. Specifies the SKU, also referred as \'edition\' of the Azure Machine Learning workspace.')
+@description('Required. Specifies the sku, also referred as \'edition\' of the Azure Machine Learning workspace.')
 @allowed([
   'Basic'
   'Enterprise'
 ])
 param sku string
 
-@sys.description('Required. The resource ID of the associated Storage Account.')
+@description('Required. The resource ID of the associated Storage Account.')
 param associatedStorageAccountResourceId string
 
-@sys.description('Required. The resource ID of the associated Key Vault.')
+@description('Required. The resource ID of the associated Key Vault.')
 param associatedKeyVaultResourceId string
 
-@sys.description('Required. The resource ID of the associated Application Insights.')
+@description('Required. The resource ID of the associated Application Insights.')
 param associatedApplicationInsightsResourceId string
 
-@sys.description('Optional. The resource ID of the associated Container Registry.')
+@description('Optional. The resource ID of the associated Container Registry.')
 param associatedContainerRegistryResourceId string = ''
 
-@sys.allowed([
-  ''
+@allowed([
   'CanNotDelete'
+  'NotSpecified'
   'ReadOnly'
 ])
-@sys.description('Optional. Specify the type of lock.')
-param lock string = ''
+@description('Optional. Specify the type of lock.')
+param lock string = 'NotSpecified'
 
-@sys.description('Optional. The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service.')
-param hbiWorkspace bool = false
-
-@sys.description('Optional. The flag to indicate whether to allow public access when behind VNet.')
-param allowPublicAccessWhenBehindVnet bool = false
-
-@sys.description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-param roleAssignments array = []
-
-@sys.description('Optional. Configuration Details for private endpoints.')
-param privateEndpoints array = []
-
-@sys.description('Optional. Computes to create respectively attach to the workspace.')
-param computes array = []
-
-@sys.description('Optional. Resource tags.')
-param tags object = {}
-
-@sys.description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
-param enableDefaultTelemetry bool = true
-
-// Identity
-@sys.description('Conditional. Enables system assigned managed identity on the resource. Required if `userAssignedIdentities` is not provided.')
+@description('Optional. Enables system assigned managed identity on the resource.')
 param systemAssignedIdentity bool = false
 
-@sys.description('Conditional. The ID(s) to assign to the resource. Required if `systemAssignedIdentity` is set to false.')
-param userAssignedIdentities object = {}
+@description('Optional. The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service.')
+param hbiWorkspace bool = false
 
-// Diagnostic Settings
-@sys.description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
+@description('Optional. The flag to indicate whether to allow public access when behind VNet.')
+param allowPublicAccessWhenBehindVnet bool = false
+
+@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
+param roleAssignments array = []
+
+@description('Optional. Configuration Details for private endpoints.')
+param privateEndpoints array = []
+
+@description('Optional. Resource tags.')
+param tags object = {}
+
+@description('Optional. Enable telemetry via the Customer Usage Attribution ID (GUID).')
+param enableDefaultTelemetry bool = true
+
+@description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
 @minValue(0)
 @maxValue(365)
 param diagnosticLogsRetentionInDays int = 365
 
-@sys.description('Optional. Resource ID of the diagnostic storage account.')
+@description('Optional. Resource ID of the diagnostic storage account.')
 param diagnosticStorageAccountId string = ''
 
-@sys.description('Optional. Resource ID of the diagnostic log analytics workspace.')
+@description('Optional. Resource ID of the diagnostic log analytics workspace.')
 param diagnosticWorkspaceId string = ''
 
-@sys.description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
+@description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
 param diagnosticEventHubAuthorizationRuleId string = ''
 
-@sys.description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
+@description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category.')
 param diagnosticEventHubName string = ''
 
-@sys.description('Optional. The name of logs that will be streamed.')
+@description('Optional. The name of logs that will be streamed.')
 @allowed([
   'AmlComputeClusterEvent'
   'AmlComputeClusterNodeEvent'
@@ -96,7 +85,7 @@ param diagnosticLogCategoriesToEnable array = [
   'AmlRunStatusChangedEvent'
 ]
 
-@sys.description('Optional. The name of metrics that will be streamed.')
+@description('Optional. The name of metrics that will be streamed.')
 @allowed([
   'AllMetrics'
 ])
@@ -104,48 +93,8 @@ param diagnosticMetricsToEnable array = [
   'AllMetrics'
 ]
 
-@sys.description('Optional. The name of the diagnostic setting, if deployed.')
+@description('Optional. The name of the diagnostic setting, if deployed.')
 param diagnosticSettingsName string = '${name}-diagnosticSettings'
-
-@sys.description('Optional. The description of this workspace.')
-param description string = ''
-
-@sys.description('Optional. URL for the discovery service to identify regional endpoints for machine learning experimentation services.')
-param discoveryUrl string = ''
-
-@sys.description('Optional. The Resource ID of the user assigned identity that will be used to access the customer managed key vault.')
-param encryptionIdentity string = ''
-
-@sys.description('Conditional. Key vault URI to access the encryption key. Required if an \'encryptionIdentity\' was provided.')
-param encryptionKeyIdentifier string = ''
-
-@sys.description('Conditional. The ResourceID of the keyVault where the customer owned encryption key is present. Required if an \'encryptionIdentity\' was provided.')
-param encryptionKeyVaultResourceId string = ''
-
-@sys.description('Optional. The compute name for image build.')
-param imageBuildCompute string = ''
-
-@sys.description('Conditional. The user assigned identity resource id that represents the workspace identity. Required if \'userAssignedIdentities\' is not empty and may not be used if \'systemAssignedIdentity\' is enabled.')
-param primaryUserAssignedIdentity string = ''
-
-@sys.description('Optional. Whether requests from Public Network are allowed.')
-@allowed([
-  'Enabled'
-  'Disabled'
-])
-param publicNetworkAccess string = 'Disabled'
-
-// ================//
-// Variables       //
-// ================//
-var enableReferencedModulesTelemetry = false
-
-var identityType = systemAssignedIdentity ? (!empty(userAssignedIdentities) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned') : (!empty(userAssignedIdentities) ? 'UserAssigned' : 'None')
-
-var identity = identityType != 'None' ? {
-  type: identityType
-  userAssignedIdentities: !empty(userAssignedIdentities) ? userAssignedIdentities : any(null)
-} : any(null)
 
 var diagnosticsLogs = [for category in diagnosticLogCategoriesToEnable: {
   category: category
@@ -166,9 +115,12 @@ var diagnosticsMetrics = [for metric in diagnosticMetricsToEnable: {
   }
 }]
 
-// ================//
-// Deployments     //
-// ================//
+var identityType = systemAssignedIdentity ? 'SystemAssigned' : 'None'
+
+var identity = identityType != 'None' ? {
+  type: identityType
+} : null
+
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   properties: {
@@ -181,7 +133,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
   }
 }
 
-resource workspace 'Microsoft.MachineLearningServices/workspaces@2021-07-01' = {
+resource workspace 'Microsoft.MachineLearningServices/workspaces@2021-04-01' = {
   name: name
   location: location
   tags: tags
@@ -195,51 +147,17 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2021-07-01' = {
     storageAccount: associatedStorageAccountResourceId
     keyVault: associatedKeyVaultResourceId
     applicationInsights: associatedApplicationInsightsResourceId
-    containerRegistry: !empty(associatedContainerRegistryResourceId) ? associatedContainerRegistryResourceId : null
+    containerRegistry: ((!(associatedContainerRegistryResourceId == '')) ? associatedContainerRegistryResourceId : null)
     hbiWorkspace: hbiWorkspace
     allowPublicAccessWhenBehindVnet: allowPublicAccessWhenBehindVnet
-    description: description
-    discoveryUrl: discoveryUrl
-    encryption: any({
-      identity: !empty(encryptionIdentity) ? {
-        userAssignedIdentity: encryptionIdentity
-      } : null
-      keyVaultProperties: !empty(encryptionIdentity) ? {
-        keyIdentifier: encryptionKeyIdentifier
-        keyVaultArmId: encryptionKeyVaultResourceId
-      } : null
-    })
-    imageBuildCompute: imageBuildCompute
-    primaryUserAssignedIdentity: primaryUserAssignedIdentity
-    publicNetworkAccess: publicNetworkAccess
   }
 }
 
-module workspace_computes 'computes/deploy.bicep' = [for compute in computes: {
-  name: '${workspace.name}-${compute.name}-compute'
-  params: {
-    machineLearningWorkspaceName: workspace.name
-    name: compute.name
-    location: compute.location
-    sku: contains(compute, 'sku') ? compute.sku : ''
-    systemAssignedIdentity: contains(compute, 'systemAssignedIdentity') ? compute.systemAssignedIdentity : false
-    userAssignedIdentities: contains(compute, 'userAssignedIdentities') ? compute.userAssignedIdentities : {}
-    tags: contains(compute, 'tags') ? compute.tags : {}
-    deployCompute: contains(compute, 'deployCompute') ? compute.deployCompute : true
-    computeLocation: contains(compute, 'computeLocation') ? compute.computeLocation : ''
-    description: contains(compute, 'description') ? compute.description : ''
-    disableLocalAuth: compute.disableLocalAuth
-    resourceId: contains(compute, 'resourceId') ? compute.resourceId : ''
-    computeType: compute.computeType
-    properties: contains(compute, 'properties') ? compute.properties : {}
-  }
-}]
-
-resource workspace_lock 'Microsoft.Authorization/locks@2017-04-01' = if (!empty(lock)) {
+resource workspace_lock 'Microsoft.Authorization/locks@2017-04-01' = if (lock != 'NotSpecified') {
   name: '${workspace.name}-${lock}-lock'
   properties: {
-    level: any(lock)
-    notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
+    level: lock
+    notes: (lock == 'CanNotDelete') ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
   }
   scope: workspace
 }
@@ -257,23 +175,17 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticsettings@202
   scope: workspace
 }
 
-module workspace_privateEndpoints '../../Microsoft.Network/privateEndpoints/deploy.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
-  name: '${uniqueString(deployment().name, location)}-Workspace-PrivateEndpoint-${index}'
+module workspace_privateEndpoints '.bicep/nested_privateEndpoint.bicep'= [for (endpoint, index) in privateEndpoints:{
+  name: '${uniqueString(deployment().name, location)}-MLWorkspace-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.service
-    ]
-    name: contains(privateEndpoint, 'name') ? privateEndpoint.name : 'pe-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
-    serviceResourceId: workspace.id
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
-    location: reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: contains(privateEndpoint, 'lock') ? privateEndpoint.lock : lock
-    privateDnsZoneGroups: contains(privateEndpoint, 'privateDnsZoneGroups') ? privateEndpoint.privateDnsZoneGroups : []
-    roleAssignments: contains(privateEndpoint, 'roleAssignments') ? privateEndpoint.roleAssignments : []
-    tags: contains(privateEndpoint, 'tags') ? privateEndpoint.tags : {}
-    manualPrivateLinkServiceConnections: contains(privateEndpoint, 'manualPrivateLinkServiceConnections') ? privateEndpoint.manualPrivateLinkServiceConnections : []
-    customDnsConfigs: contains(privateEndpoint, 'customDnsConfigs') ? privateEndpoint.customDnsConfigs : []
+    privateEndpointResourceId: workspace.id
+    privateEndpointVnetLocation: (empty(privateEndpoints) ? 'dummy' : reference(split(endpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)
+    privateEndpointObj: {
+      name: '<<endpoint-name>>'
+      service: 'amlworkspace'
+      subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>'
+    }
+    tags: tags
   }
 }]
 
@@ -288,21 +200,14 @@ module workspace_rbac '.bicep/nested_roleAssignments.bicep' = [for (roleAssignme
   }
 }]
 
-// ================//
-// Outputs         //
-// ================//
-
-@sys.description('The resource ID of the machine learning service.')
+@description('The resource ID of the machine learning service')
 output resourceId string = workspace.id
 
-@sys.description('The resource group the machine learning service was deployed into.')
+@description('The resource group the machine learning service was deployed into')
 output resourceGroupName string = resourceGroup().name
 
-@sys.description('The name of the machine learning service.')
+@description('The name of the machine learning service')
 output name string = workspace.name
 
-@sys.description('The principal ID of the system assigned identity.')
-output principalId string = (!empty(identity) && contains(identity.type, 'SystemAssigned')) ? workspace.identity.principalId : ''
-
-@sys.description('The location the resource was deployed into.')
-output location string = workspace.location
+@description('The principal ID of the system assigned identity.')
+output principalId string = systemAssignedIdentity ? workspace.identity.principalId : ''

@@ -5,7 +5,7 @@ param name string = ''
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. Name of this SKU. - Basic, Standard, Premium.')
+@description('Required. Name of this SKU. - Basic, Standard, Premium')
 @allowed([
   'Basic'
   'Standard'
@@ -16,7 +16,7 @@ param skuName string = 'Basic'
 @description('Optional. Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones.')
 param zoneRedundant bool = false
 
-@description('Optional. Authorization Rules for the Service Bus namespace.')
+@description('Optional. Authorization Rules for the Service Bus namespace')
 param authorizationRules array = [
   {
     name: 'RootManageSharedAccessKey'
@@ -28,7 +28,7 @@ param authorizationRules array = [
   }
 ]
 
-@description('Optional. IP Filter Rules for the Service Bus namespace.')
+@description('Optional. IP Filter Rules for the Service Bus namespace')
 param ipFilterRules array = []
 
 @description('Optional. The migration configuration.')
@@ -58,12 +58,12 @@ param diagnosticEventHubAuthorizationRuleId string = ''
 param diagnosticEventHubName string = ''
 
 @allowed([
-  ''
   'CanNotDelete'
+  'NotSpecified'
   'ReadOnly'
 ])
 @description('Optional. Specify the type of lock.')
-param lock string = ''
+param lock string = 'NotSpecified'
 
 @description('Optional. Enables system assigned managed identity on the resource.')
 param systemAssignedIdentity bool = false
@@ -71,7 +71,7 @@ param systemAssignedIdentity bool = false
 @description('Optional. The ID(s) to assign to the resource.')
 param userAssignedIdentities object = {}
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
+@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
 param roleAssignments array = []
 
 @description('Optional. Configuration Details for private endpoints.')
@@ -86,10 +86,10 @@ param enableDefaultTelemetry bool = true
 @description('Generated. Do not provide a value! This date value is used to generate a SAS token to access the modules.')
 param baseTime string = utcNow('u')
 
-@description('Optional. The queues to create in the service bus namespace.')
+@description('Optional. The queues to create in the service bus namespace')
 param queues array = []
 
-@description('Optional. The topics to create in the service bus namespace.')
+@description('Optional. The topics to create in the service bus namespace')
 param topics array = []
 
 @description('Optional. The name of logs that will be streamed.')
@@ -141,8 +141,6 @@ var identity = identityType != 'None' ? {
   userAssignedIdentities: !empty(userAssignedIdentities) ? userAssignedIdentities : null
 } : null
 
-var enableReferencedModulesTelemetry = false
-
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   properties: {
@@ -175,7 +173,6 @@ module serviceBusNamespace_disasterRecoveryConfig 'disasterRecoveryConfigs/deplo
     name: contains(disasterRecoveryConfigs, 'name') ? disasterRecoveryConfigs.name : 'default'
     alternateName: contains(disasterRecoveryConfigs, 'alternateName') ? disasterRecoveryConfigs.alternateName : ''
     partnerNamespaceResourceID: contains(disasterRecoveryConfigs, 'partnerNamespace') ? disasterRecoveryConfigs.partnerNamespace : ''
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -186,7 +183,6 @@ module serviceBusNamespace_migrationConfigurations 'migrationConfigurations/depl
     name: contains(migrationConfigurations, 'name') ? migrationConfigurations.name : '$default'
     postMigrationName: migrationConfigurations.postMigrationName
     targetNamespaceResourceId: migrationConfigurations.targetNamespace
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -196,7 +192,6 @@ module serviceBusNamespace_virtualNetworkRules 'virtualNetworkRules/deploy.bicep
     namespaceName: serviceBusNamespace.name
     name: last(split(virtualNetworkRule, '/'))
     virtualNetworkSubnetId: virtualNetworkRule
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -206,7 +201,6 @@ module serviceBusNamespace_authorizationRules 'authorizationRules/deploy.bicep' 
     namespaceName: serviceBusNamespace.name
     name: authorizationRule.name
     rights: contains(authorizationRule, 'rights') ? authorizationRule.rights : []
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -218,7 +212,6 @@ module serviceBusNamespace_ipFilterRules 'ipFilterRules/deploy.bicep' = [for (ip
     action: ipFilterRule.action
     filterName: ipFilterRule.filterName
     ipMask: ipFilterRule.ipMask
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -243,7 +236,7 @@ module serviceBusNamespace_queues 'queues/deploy.bicep' = [for (queue, index) in
     enableBatchedOperations: contains(queue, 'enableBatchedOperations') ? queue.enableBatchedOperations : true
     enableExpress: contains(queue, 'enableExpress') ? queue.enableExpress : false
     enablePartitioning: contains(queue, 'enablePartitioning') ? queue.enablePartitioning : false
-    lock: contains(queue, 'lock') ? queue.lock : ''
+    lock: contains(queue, 'lock') ? queue.lock : 'NotSpecified'
     lockDuration: contains(queue, 'lockDuration') ? queue.lockDuration : 'PT1M'
     maxDeliveryCount: contains(queue, 'maxDeliveryCount') ? queue.maxDeliveryCount : 10
     maxSizeInMegabytes: contains(queue, 'maxSizeInMegabytes') ? queue.maxSizeInMegabytes : 1024
@@ -251,7 +244,6 @@ module serviceBusNamespace_queues 'queues/deploy.bicep' = [for (queue, index) in
     requiresSession: contains(queue, 'requiresSession') ? queue.requiresSession : false
     roleAssignments: contains(queue, 'roleAssignments') ? queue.roleAssignments : []
     status: contains(queue, 'status') ? queue.status : 'Active'
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
@@ -276,21 +268,20 @@ module serviceBusNamespace_topics 'topics/deploy.bicep' = [for (topic, index) in
     enableBatchedOperations: contains(topic, 'enableBatchedOperations') ? topic.enableBatchedOperations : true
     enableExpress: contains(topic, 'enableExpress') ? topic.enableExpress : false
     enablePartitioning: contains(topic, 'enablePartitioning') ? topic.enablePartitioning : false
-    lock: contains(topic, 'lock') ? topic.lock : ''
+    lock: contains(topic, 'lock') ? topic.lock : 'NotSpecified'
     maxMessageSizeInKilobytes: contains(topic, 'maxMessageSizeInKilobytes') ? topic.maxMessageSizeInKilobytes : 1024
     maxSizeInMegabytes: contains(topic, 'maxSizeInMegabytes') ? topic.maxSizeInMegabytes : 1024
     requiresDuplicateDetection: contains(topic, 'requiresDuplicateDetection') ? topic.requiresDuplicateDetection : false
     roleAssignments: contains(topic, 'roleAssignments') ? topic.roleAssignments : []
     status: contains(topic, 'status') ? topic.status : 'Active'
     supportOrdering: contains(topic, 'supportOrdering') ? topic.supportOrdering : false
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
   }
 }]
 
-resource serviceBusNamespace_lock 'Microsoft.Authorization/locks@2017-04-01' = if (!empty(lock)) {
+resource serviceBusNamespace_lock 'Microsoft.Authorization/locks@2017-04-01' = if (lock != 'NotSpecified') {
   name: '${serviceBusNamespace.name}-${lock}-lock'
   properties: {
-    level: any(lock)
+    level: lock
     notes: lock == 'CanNotDelete' ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
   }
   scope: serviceBusNamespace
@@ -309,23 +300,17 @@ resource serviceBusNamespace_diagnosticSettings 'Microsoft.Insights/diagnosticSe
   scope: serviceBusNamespace
 }
 
-module serviceBusNamespace_privateEndpoints '../../Microsoft.Network/privateEndpoints/deploy.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
-  name: '${uniqueString(deployment().name, location)}-Namespace-PrivateEndpoint-${index}'
+module serviceBusNamespace_privateEndpoints '.bicep/nested_privateEndpoint.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
+  name: '${uniqueString(deployment().name, location)}-PrivateEndpoint-${index}'
   params: {
-    groupIds: [
-      privateEndpoint.service
-    ]
-    name: contains(privateEndpoint, 'name') ? privateEndpoint.name : 'pe-${last(split(serviceBusNamespace.id, '/'))}-${privateEndpoint.service}-${index}'
-    serviceResourceId: serviceBusNamespace.id
-    subnetResourceId: privateEndpoint.subnetResourceId
-    enableDefaultTelemetry: enableReferencedModulesTelemetry
-    location: reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
-    lock: contains(privateEndpoint, 'lock') ? privateEndpoint.lock : lock
-    privateDnsZoneGroups: contains(privateEndpoint, 'privateDnsZoneGroups') ? privateEndpoint.privateDnsZoneGroups : []
-    roleAssignments: contains(privateEndpoint, 'roleAssignments') ? privateEndpoint.roleAssignments : []
-    tags: contains(privateEndpoint, 'tags') ? privateEndpoint.tags : {}
-    manualPrivateLinkServiceConnections: contains(privateEndpoint, 'manualPrivateLinkServiceConnections') ? privateEndpoint.manualPrivateLinkServiceConnections : []
-    customDnsConfigs: contains(privateEndpoint, 'customDnsConfigs') ? privateEndpoint.customDnsConfigs : []
+    privateEndpointResourceId: serviceBusNamespace.id
+    privateEndpointVnetLocation: reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
+    privateEndpointObj: {
+     name: '<<endpoint-name>>'
+     service: 'namespace'
+     subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>'
+    }
+    tags: tags
   }
 }]
 
@@ -340,17 +325,14 @@ module serviceBusNamespace_rbac '.bicep/nested_roleAssignments.bicep' = [for (ro
   }
 }]
 
-@description('The resource ID of the deployed service bus namespace.')
+@description('The resource ID of the deployed service bus namespace')
 output resourceId string = serviceBusNamespace.id
 
-@description('The resource group of the deployed service bus namespace.')
+@description('The resource group of the deployed service bus namespace')
 output resourceGroupName string = resourceGroup().name
 
-@description('The name of the deployed service bus namespace.')
+@description('The name of the deployed service bus namespace')
 output name string = serviceBusNamespace.name
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedPrincipalId string = systemAssignedIdentity && contains(serviceBusNamespace.identity, 'principalId') ? serviceBusNamespace.identity.principalId : ''
-
-@description('The location the resource was deployed into.')
-output location string = serviceBusNamespace.location
