@@ -334,6 +334,9 @@ module namespaces './Microsoft.EventHub/namespaces/deploy.bicep' = {
     "name": {
       "value": "<<namePrefix>>-az-evnsp-x-001"
     },
+    "lock": {
+      "value": "CanNotDelete"
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -446,6 +449,7 @@ module namespaces './Microsoft.EventHub/namespaces/deploy.bicep' = {
   name: '${uniqueString(deployment().name)}-namespaces'
   params: {
     name: '<<namePrefix>>-az-evnsp-x-001'
+    lock: 'CanNotDelete'
     privateEndpoints: [
       {
         name: '<<endpoint-name>>'
