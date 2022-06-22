@@ -308,8 +308,8 @@ userAssignedIdentities: {
 <summary>via Bicep module</summary>
 
 ```bicep
-module ResourceModules './l/ResourceModules//deploy.bicep' = {
-  name: '${uniqueString(deployment().name)}-ResourceModules'
+module namespaces './Microsoft.EventHub/namespaces/deploy.bicep' = {
+  name: '${uniqueString(deployment().name)}-namespaces'
   params: {
   
   }
@@ -441,8 +441,8 @@ module ResourceModules './l/ResourceModules//deploy.bicep' = {
 <summary>via Bicep module</summary>
 
 ```bicep
-module ResourceModules './l/ResourceModules//deploy.bicep' = {
-  name: '${uniqueString(deployment().name)}-ResourceModules'
+module namespaces './Microsoft.EventHub/namespaces/deploy.bicep' = {
+  name: '${uniqueString(deployment().name)}-namespaces'
   params: {
     name: '<<namePrefix>>-az-evnsp-x-001'
     privateEndpoints: [
