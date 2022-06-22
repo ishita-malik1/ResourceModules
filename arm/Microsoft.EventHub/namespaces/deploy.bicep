@@ -12,7 +12,7 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Standard'
 
-@description('Optional. Event Hub plan scale-out capacity of the resource')
+@description('Optional. Event Hub plan scale-out capacity of the resource.')
 @minValue(1)
 @maxValue(20)
 param skuCapacity int = 1
@@ -28,7 +28,7 @@ param isAutoInflateEnabled bool = false
 @maxValue(20)
 param maximumThroughputUnits int = 1
 
-@description('Optional. Authorization Rules for the Event Hub namespace')
+@description('Optional. Authorization Rules for the Event Hub namespace.')
 param authorizationRules array = [
   {
     name: 'RootManageSharedAccessKey'
@@ -43,7 +43,7 @@ param authorizationRules array = [
 @description('Optional. Configuration Details for private endpoints.For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints array = []
 
-@description('Optional. Service endpoint object information')
+@description('Optional. Service endpoint object information.')
 param networkAcls object = {}
 
 @description('Optional. Virtual Network ID to lock down the Event Hub.')
@@ -80,7 +80,7 @@ param systemAssignedIdentity bool = false
 @description('Optional. The ID(s) to assign to the resource.')
 param userAssignedIdentities object = {}
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
+@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments array = []
 
 @description('Optional. Tags of the resource.')
@@ -92,10 +92,10 @@ param enableDefaultTelemetry bool = true
 @description('Generated. Do not provide a value! This date value is used to generate a SAS token to access the modules.')
 param baseTime string = utcNow('u')
 
-@description('Optional. The event hubs to deploy into this namespace')
+@description('Optional. The event hubs to deploy into this namespace.')
 param eventHubs array = []
 
-@description('Optional. The disaster recovery config for this namespace')
+@description('Optional. The disaster recovery config for this namespace.')
 param disasterRecoveryConfig object = {}
 
 @description('Optional. The name of logs that will be streamed.')
