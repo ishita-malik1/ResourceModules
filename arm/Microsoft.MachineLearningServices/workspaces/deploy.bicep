@@ -25,11 +25,11 @@ param associatedContainerRegistryResourceId string = ''
 
 @allowed([
   'CanNotDelete'
-  'NotSpecified'
+  ''
   'ReadOnly'
 ])
 @description('Optional. Specify the type of lock.')
-param lock string = 'NotSpecified'
+param lock string = ''
 
 @description('Optional. Enables system assigned managed identity on the resource.')
 param systemAssignedIdentity bool = false
@@ -153,7 +153,7 @@ resource workspace 'Microsoft.MachineLearningServices/workspaces@2021-04-01' = {
   }
 }
 
-resource workspace_lock 'Microsoft.Authorization/locks@2017-04-01' = if (lock != 'NotSpecified') {
+resource workspace_lock 'Microsoft.Authorization/locks@2017-04-01' = if (!empty(lock)) {
   name: '${workspace.name}-${lock}-lock'
   properties: {
     level: lock
@@ -211,3 +211,6 @@ output name string = workspace.name
 
 @description('The principal ID of the system assigned identity.')
 output principalId string = systemAssignedIdentity ? workspace.identity.principalId : ''
+
+@description('The location the resource was deployed into.')
+output location string = workspace.location

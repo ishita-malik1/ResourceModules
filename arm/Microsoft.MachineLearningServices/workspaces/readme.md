@@ -16,8 +16,7 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.Authorization/locks` | [2017-04-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2017-04-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2020-10-01-preview](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-10-01-preview/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2021-07-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2021-07-01/workspaces) |
-| `Microsoft.MachineLearningServices/workspaces/computes` | [2022-01-01-preview](https://docs.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-01-01-preview/workspaces/computes) |
+| `Microsoft.MachineLearningServices/workspaces` | [2021-04-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2021-04-01/workspaces) |
 | `Microsoft.Network/privateEndpoints` | [2021-05-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2021-05-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-05-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -30,24 +29,13 @@ This module deploys a Machine Learning Services Workspace.
 | `associatedKeyVaultResourceId` | string |  | The resource ID of the associated Key Vault. |
 | `associatedStorageAccountResourceId` | string |  | The resource ID of the associated Storage Account. |
 | `name` | string |  | The name of the machine learning workspace. |
-| `sku` | string | `[Basic, Enterprise]` | Specifies the SKU, also referred as 'edition' of the Azure Machine Learning workspace. |
-
-**Conditional parameters**
-| Parameter Name | Type | Default Value | Description |
-| :-- | :-- | :-- | :-- |
-| `encryptionKeyIdentifier` | string | `''` | Key vault URI to access the encryption key. Required if an 'encryptionIdentity' was provided. |
-| `encryptionKeyVaultResourceId` | string | `''` | The ResourceID of the keyVault where the customer owned encryption key is present. Required if an 'encryptionIdentity' was provided. |
-| `primaryUserAssignedIdentity` | string | `''` | The user assigned identity resource id that represents the workspace identity. Required if 'userAssignedIdentities' is not empty and may not be used if 'systemAssignedIdentity' is enabled. |
-| `systemAssignedIdentity` | bool | `False` | Enables system assigned managed identity on the resource. Required if `userAssignedIdentities` is not provided. |
-| `userAssignedIdentities` | object | `{object}` | The ID(s) to assign to the resource. Required if `systemAssignedIdentity` is set to false. |
+| `sku` | string | `[Basic, Enterprise]` | Specifies the sku, also referred as 'edition' of the Azure Machine Learning workspace. |
 
 **Optional parameters**
 | Parameter Name | Type | Default Value | Allowed Values | Description |
 | :-- | :-- | :-- | :-- | :-- |
 | `allowPublicAccessWhenBehindVnet` | bool | `False` |  | The flag to indicate whether to allow public access when behind VNet. |
 | `associatedContainerRegistryResourceId` | string | `''` |  | The resource ID of the associated Container Registry. |
-| `computes` | _[computes](computes/readme.md)_ array | `[]` |  | Computes to create respectively attach to the workspace. |
-| `description` | string | `''` |  | The description of this workspace. |
 | `diagnosticEventHubAuthorizationRuleId` | string | `''` |  | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
 | `diagnosticEventHubName` | string | `''` |  | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. |
 | `diagnosticLogCategoriesToEnable` | array | `[AmlComputeClusterEvent, AmlComputeClusterNodeEvent, AmlComputeJobEvent, AmlComputeCpuGpuUtilization, AmlRunStatusChangedEvent]` | `[AmlComputeClusterEvent, AmlComputeClusterNodeEvent, AmlComputeJobEvent, AmlComputeCpuGpuUtilization, AmlRunStatusChangedEvent]` | The name of logs that will be streamed. |
@@ -56,16 +44,13 @@ This module deploys a Machine Learning Services Workspace.
 | `diagnosticSettingsName` | string | `[format('{0}-diagnosticSettings', parameters('name'))]` |  | The name of the diagnostic setting, if deployed. |
 | `diagnosticStorageAccountId` | string | `''` |  | Resource ID of the diagnostic storage account. |
 | `diagnosticWorkspaceId` | string | `''` |  | Resource ID of the diagnostic log analytics workspace. |
-| `discoveryUrl` | string | `''` |  | URL for the discovery service to identify regional endpoints for machine learning experimentation services. |
 | `enableDefaultTelemetry` | bool | `True` |  | Enable telemetry via the Customer Usage Attribution ID (GUID). |
-| `encryptionIdentity` | string | `''` |  | The Resource ID of the user assigned identity that will be used to access the customer managed key vault. |
 | `hbiWorkspace` | bool | `False` |  | The flag to signal HBI data in the workspace and reduce diagnostic data collected by the service. |
-| `imageBuildCompute` | string | `''` |  | The compute name for image build. |
 | `location` | string | `[resourceGroup().location]` |  | Location for all resources. |
-| `lock` | string | `''` | `[, CanNotDelete, ReadOnly]` | Specify the type of lock. |
+| `lock` | string | `''` | `[CanNotDelete, , ReadOnly]` | Specify the type of lock. |
 | `privateEndpoints` | array | `[]` |  | Configuration Details for private endpoints. |
-| `publicNetworkAccess` | string | `'Disabled'` | `[Enabled, Disabled]` | Whether requests from Public Network are allowed. |
-| `roleAssignments` | array | `[]` |  | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+| `roleAssignments` | array | `[]` |  | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11' |
+| `systemAssignedIdentity` | bool | `False` |  | Enables system assigned managed identity on the resource. |
 | `tags` | object | `{object}` |  | Resource tags. |
 
 
@@ -390,10 +375,10 @@ userAssignedIdentities: {
 | Output Name | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the machine learning service. |
+| `name` | string | The name of the machine learning service |
 | `principalId` | string | The principal ID of the system assigned identity. |
-| `resourceGroupName` | string | The resource group the machine learning service was deployed into. |
-| `resourceId` | string | The resource ID of the machine learning service. |
+| `resourceGroupName` | string | The resource group the machine learning service was deployed into |
+| `resourceId` | string | The resource ID of the machine learning service |
 
 ## Deployment examples
 
@@ -462,123 +447,61 @@ module workspaces './Microsoft.MachineLearningServices/workspaces/deploy.bicep' 
 
 ```json
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "name": {
-            "value": "<<namePrefix>>-az-mls-x-001"
-        },
-        "lock": {
-            "value": "CanNotDelete"
-        },
-        "sku": {
-            "value": "Basic"
-        },
-        "associatedStorageAccountResourceId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/adp<<namePrefix>>azsax001"
-        },
-        "associatedKeyVaultResourceId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-<<namePrefix>>-az-kv-x-001"
-        },
-        "associatedApplicationInsightsResourceId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Insights/components/adp-<<namePrefix>>-az-appi-x-001"
-        },
-        "systemAssignedIdentity": {
-            "value": false // Must be false if `primaryUserAssignedIdentity` is provided
-        },
-        "userAssignedIdentities": {
-            "value": {
-                "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001": {}
-            }
-        },
-        "description": {
-            "value": "The cake is a lie."
-        },
-        "discoveryUrl": {
-            "value": "http://example.com"
-        },
-        "encryptionIdentity": {
-            "value": "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001"
-        },
-        "encryptionKeyIdentifier": {
-            "value": "https://adp-carml-az-kv-nopr-002.vault.azure.net/keys/keyEncryptionKey/5263fcde203347baa7cda35d074073b2" // ID must be updated for new keys
-        },
-        "encryptionKeyVaultResourceId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-carml-az-kv-nopr-002"
-        },
-        "imageBuildCompute": {
-            "value": "testcompute"
-        },
-        "publicNetworkAccess": {
-            "value": "Enabled"
-        },
-        "primaryUserAssignedIdentity": {
-            "value": "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001"
-        },
-        "computes": {
-            "value": [
-                {
-                    "name": "DefaultCPU",
-                    "location": "westeurope",
-                    "computeLocation": "westeurope",
-                    "sku": "Basic",
-                    "systemAssignedIdentity": false,
-                    "userAssignedIdentities": {
-                        "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001": {}
-                    },
-                    "description": "Default CPU Cluster",
-                    "disableLocalAuth": false,
-                    "computeType": "AmlCompute",
-                    "properties": {
-                        "enableNodePublicIp": true,
-                        "isolatedNetwork": false,
-                        "osType": "Linux",
-                        "remoteLoginPortPublicAccess": "Disabled",
-                        "scaleSettings": {
-                            "maxNodeCount": 3,
-                            "minNodeCount": 0,
-                            "nodeIdleTimeBeforeScaleDown": "PT5M"
-                        },
-                        "vmPriority": "Dedicated",
-                        "vmSize": "STANDARD_DS11_V2"
-                    }
-                }
-            ]
-        },
-        "roleAssignments": {
-            "value": [
-                {
-                    "roleDefinitionIdOrName": "Reader",
-                    "principalIds": [
-                        "<<deploymentSpId>>"
-                    ]
-                }
-            ]
-        },
-        "diagnosticLogsRetentionInDays": {
-            "value": 7
-        },
-        "diagnosticStorageAccountId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/adp<<namePrefix>>azsax001"
-        },
-        "diagnosticWorkspaceId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/microsoft.operationalinsights/workspaces/adp-<<namePrefix>>-az-law-x-001"
-        },
-        "diagnosticEventHubAuthorizationRuleId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.EventHub/namespaces/adp-<<namePrefix>>-az-evhns-x-001/AuthorizationRules/RootManageSharedAccessKey"
-        },
-        "diagnosticEventHubName": {
-            "value": "adp-<<namePrefix>>-az-evh-x-001"
-        },
-        "privateEndpoints": {
-            "value": [
-                {
-                    "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints",
-                    "service": "amlworkspace"
-                }
-            ]
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "<<namePrefix>>-az-mls-x-001"
+    },
+    "sku": {
+      "value": "Basic"
+    },
+    "associatedStorageAccountResourceId": {
+      "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/adp<<namePrefix>>azsax001"
+    },
+    "associatedKeyVaultResourceId": {
+      "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-<<namePrefix>>-az-kv-x-001"
+    },
+    "associatedApplicationInsightsResourceId": {
+      "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Insights/components/adp-<<namePrefix>>-az-appi-x-001"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "name": "<<endpoint-name>>",
+          "service": "amlworkspace",
+          "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>"
         }
+      ]
+    },
+
+    "roleAssignments": {
+      "value": [
+        {
+          "roleDefinitionIdOrName": "Reader",
+          "principalIds": ["<<deploymentSpId>>"]
+        }
+      ]
+    },
+    "diagnosticLogsRetentionInDays": {
+      "value": 7
+    },
+    "diagnosticStorageAccountId": {
+      "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/adp<<namePrefix>>azsax001"
+    },
+    "diagnosticWorkspaceId": {
+      "value": "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/microsoft.operationalinsights/workspaces/adp-<<namePrefix>>-az-law-x-001"
+    },
+    "diagnosticEventHubAuthorizationRuleId": {
+      "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.EventHub/namespaces/adp-<<namePrefix>>-az-evhns-x-001/AuthorizationRules/RootManageSharedAccessKey"
+    },
+    "diagnosticEventHubName": {
+      "value": "adp-<<namePrefix>>-az-evh-x-001"
+    },
+    "systemAssignedIdentity": {
+      "value": true
     }
+  }
 }
 
 ```
@@ -594,49 +517,15 @@ module workspaces './Microsoft.MachineLearningServices/workspaces/deploy.bicep' 
   name: '${uniqueString(deployment().name)}-workspaces'
   params: {
     name: '<<namePrefix>>-az-mls-x-001'
-    lock: 'CanNotDelete'
     sku: 'Basic'
     associatedStorageAccountResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/adp<<namePrefix>>azsax001'
     associatedKeyVaultResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-<<namePrefix>>-az-kv-x-001'
     associatedApplicationInsightsResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Insights/components/adp-<<namePrefix>>-az-appi-x-001'
-    systemAssignedIdentity: false
-    userAssignedIdentities: {
-      '/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001': {}
-    }
-    description: 'The cake is a lie.'
-    discoveryUrl: 'http://example.com'
-    encryptionIdentity: '/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001'
-    encryptionKeyIdentifier: 'https://adp-carml-az-kv-nopr-002.vault.azure.net/keys/keyEncryptionKey/5263fcde203347baa7cda35d074073b2'
-    encryptionKeyVaultResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.KeyVault/vaults/adp-carml-az-kv-nopr-002'
-    imageBuildCompute: 'testcompute'
-    publicNetworkAccess: 'Enabled'
-    primaryUserAssignedIdentity: '/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001'
-    computes: [
+    privateEndpoints: [
       {
-        name: 'DefaultCPU'
-        location: 'westeurope'
-        computeLocation: 'westeurope'
-        sku: 'Basic'
-        systemAssignedIdentity: false
-        userAssignedIdentities: {
-          '/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001': {}
-        }
-        description: 'Default CPU Cluster'
-        disableLocalAuth: false
-        computeType: 'AmlCompute'
-        properties: {
-          enableNodePublicIp: true
-          isolatedNetwork: false
-          osType: 'Linux'
-          remoteLoginPortPublicAccess: 'Disabled'
-          scaleSettings: {
-            maxNodeCount: 3
-            minNodeCount: 0
-            nodeIdleTimeBeforeScaleDown: 'PT5M'
-          }
-          vmPriority: 'Dedicated'
-          vmSize: 'STANDARD_DS11_V2'
-        }
+        name: '<<endpoint-name>>'
+        service: 'amlworkspace'
+        subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>'
       }
     ]
     roleAssignments: [
@@ -652,12 +541,7 @@ module workspaces './Microsoft.MachineLearningServices/workspaces/deploy.bicep' 
     diagnosticWorkspaceId: '/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/microsoft.operationalinsights/workspaces/adp-<<namePrefix>>-az-law-x-001'
     diagnosticEventHubAuthorizationRuleId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.EventHub/namespaces/adp-<<namePrefix>>-az-evhns-x-001/AuthorizationRules/RootManageSharedAccessKey'
     diagnosticEventHubName: 'adp-<<namePrefix>>-az-evh-x-001'
-    privateEndpoints: [
-      {
-        subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints'
-        service: 'amlworkspace'
-      }
-    ]
+    systemAssignedIdentity: true
   }
 }
 ```
