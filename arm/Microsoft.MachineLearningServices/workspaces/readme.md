@@ -16,7 +16,7 @@ This module deploys a Machine Learning Services Workspace.
 | `Microsoft.Authorization/locks` | [2017-04-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2017-04-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2020-10-01-preview](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-10-01-preview/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.MachineLearningServices/workspaces` | [2021-04-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2021-04-01/workspaces) |
+| `Microsoft.MachineLearningServices/workspaces` | [2022-05-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2022-05-01/workspaces) |
 | `Microsoft.Network/privateEndpoints` | [2021-05-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2021-05-01](https://docs.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-05-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -375,10 +375,10 @@ userAssignedIdentities: {
 | Output Name | Type | Description |
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the machine learning service |
+| `name` | string | The name of the machine learning service. |
 | `principalId` | string | The principal ID of the system assigned identity. |
-| `resourceGroupName` | string | The resource group the machine learning service was deployed into |
-| `resourceId` | string | The resource ID of the machine learning service |
+| `resourceGroupName` | string | The resource group the machine learning service was deployed into. |
+| `resourceId` | string | The resource ID of the machine learning service. |
 
 ## Deployment examples
 

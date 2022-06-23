@@ -133,7 +133,7 @@ resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (ena
   }
 }
 
-resource workspace 'Microsoft.MachineLearningServices/workspaces@2021-04-01' = {
+resource workspace 'Microsoft.MachineLearningServices/workspaces@2022-05-01' = {
   name: name
   location: location
   tags: tags
@@ -200,13 +200,13 @@ module workspace_rbac '.bicep/nested_roleAssignments.bicep' = [for (roleAssignme
   }
 }]
 
-@description('The resource ID of the machine learning service')
+@description('The resource ID of the machine learning service.')
 output resourceId string = workspace.id
 
-@description('The resource group the machine learning service was deployed into')
+@description('The resource group the machine learning service was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The name of the machine learning service')
+@description('The name of the machine learning service.')
 output name string = workspace.name
 
 @description('The principal ID of the system assigned identity.')
