@@ -56,7 +56,7 @@ This module deploys different kinds of cognitive services resources
 | `migrationToken` | string | `''` |  | Resource migration token. |
 | `networkAcls` | object | `{object}` |  | Service endpoint object information. |
 | `privateEndpoints` | array | `[]` |  | Configuration Details for private endpoints. |
-| `publicNetworkAccess` | string | `''` | `[, Enabled, Disabled]` | Whether or not public endpoint access is allowed for this account. |
+| `publicNetworkAccess` | string | `''` | `[, Enabled, Disabled]` | Subdomain name used for token-based authentication. Must be set if 'networkAcls' are set. |
 | `restore` | bool | `False` |  | Restore a soft-deleted cognitive service at deployment time. Will fail if no such soft-deleted resource exists. |
 | `restrictOutboundNetworkAccess` | bool | `True` |  | Restrict outbound network access. |
 | `roleAssignments` | array | `[]` |  | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalId' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
@@ -390,11 +390,10 @@ userAssignedIdentities: {
 
 | Output Name | Type | Description |
 | :-- | :-- | :-- |
-| `endpoint` | string | The service endpoint of the cognitive services account. |
-| `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the cognitive services account. |
-| `resourceGroupName` | string | The resource group the cognitive services account was deployed into. |
-| `resourceId` | string | The resource ID of the cognitive services account. |
+| `endpoint` | string | The service endpoint of the cognitive services account |
+| `name` | string | The name of the cognitive services account |
+| `resourceGroupName` | string | The resource group the cognitive services account was deployed into |
+| `resourceId` | string | The resource ID of the cognitive services account |
 | `systemAssignedPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Considerations

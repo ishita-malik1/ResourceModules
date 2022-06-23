@@ -1,4 +1,4 @@
-@description('Required. The name of Cognitive Services account')
+@description('Required. The name of Cognitive Services account.')
 param name string
 
 @description('Required. Kind of the Cognitive Services. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
@@ -81,7 +81,7 @@ param customSubDomainName string = ''
 ])
 param publicNetworkAccess string = ''
 
-@description('Optional. Service endpoint object information')
+@description('Optional. Service endpoint object information.')
 param networkAcls object = {}
 
 @description('Optional. Enables system assigned managed identity on the resource.')
@@ -91,17 +91,17 @@ param systemAssignedIdentity bool = false
 param userAssignedIdentities object = {}
 
 @allowed([
+  ''
   'CanNotDelete'
-  'NotSpecified'
   'ReadOnly'
 ])
 @description('Optional. Specify the type of lock.')
-param lock string = 'NotSpecified'
+param lock string = ''
 
 @description('Optional. Configuration Details for private endpoints.')
 param privateEndpoints array = []
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
+@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments array = []
 
 @description('Optional. Tags of the resource.')
@@ -116,7 +116,7 @@ param apiProperties object = {}
 @description('Optional. Allow only Azure AD authentication. Should be enabled for security reasons.')
 param disableLocalAuth bool = true
 
-@description('Optional. Properties to configure encryption')
+@description('Optional. Properties to configure encryption.')
 param encryption object = {}
 
 @description('Optional. Resource migration token.')
@@ -217,10 +217,10 @@ resource cognitiveServices 'Microsoft.CognitiveServices/accounts@2021-10-01' = {
   }
 }
 
-resource cognitiveServices_lock 'Microsoft.Authorization/locks@2017-04-01' = if (lock != 'NotSpecified') {
+resource cognitiveServices_lock 'Microsoft.Authorization/locks@2017-04-01' = if (!empty(lock)) {
   name: '${cognitiveServices.name}-${lock}-lock'
   properties: {
-    level: lock
+    level: any(lock)
     notes: (lock == 'CanNotDelete') ? 'Cannot delete resource or child resources.' : 'Cannot modify the resource or child resources.'
   }
   scope: cognitiveServices
