@@ -16,7 +16,7 @@ param skuName string = 'Basic'
 @description('Optional. Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones.')
 param zoneRedundant bool = false
 
-@description('Optional. Authorization Rules for the Service Bus namespace')
+@description('Optional. Authorization Rules for the Service Bus namespace.')
 param authorizationRules array = [
   {
     name: 'RootManageSharedAccessKey'
@@ -28,7 +28,7 @@ param authorizationRules array = [
   }
 ]
 
-@description('Optional. IP Filter Rules for the Service Bus namespace')
+@description('Optional. IP Filter Rules for the Service Bus namespace.')
 param ipFilterRules array = []
 
 @description('Optional. The migration configuration.')
@@ -37,7 +37,7 @@ param migrationConfigurations object = {}
 @description('Optional. The disaster recovery configuration.')
 param disasterRecoveryConfigs object = {}
 
-@description('Optional. vNet Rules SubnetIds for the Service Bus namespace.')
+@description('Optional. VNet rules SubnetIds for the Service Bus namespace.')
 param virtualNetworkRules array = []
 
 @description('Optional. Specifies the number of days that logs will be kept for; a value of 0 will retain data indefinitely.')
@@ -58,12 +58,12 @@ param diagnosticEventHubAuthorizationRuleId string = ''
 param diagnosticEventHubName string = ''
 
 @allowed([
+  ''
   'CanNotDelete'
-  'NotSpecified'
   'ReadOnly'
 ])
 @description('Optional. Specify the type of lock.')
-param lock string = 'NotSpecified'
+param lock string = ''
 
 @description('Optional. Enables system assigned managed identity on the resource.')
 param systemAssignedIdentity bool = false
@@ -71,7 +71,7 @@ param systemAssignedIdentity bool = false
 @description('Optional. The ID(s) to assign to the resource.')
 param userAssignedIdentities object = {}
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'')
+@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalId\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
 param roleAssignments array = []
 
 @description('Optional. Configuration Details for private endpoints.')
@@ -86,10 +86,10 @@ param enableDefaultTelemetry bool = true
 @description('Generated. Do not provide a value! This date value is used to generate a SAS token to access the modules.')
 param baseTime string = utcNow('u')
 
-@description('Optional. The queues to create in the service bus namespace')
+@description('Optional. The queues to create in the service bus namespace.')
 param queues array = []
 
-@description('Optional. The topics to create in the service bus namespace')
+@description('Optional. The topics to create in the service bus namespace.')
 param topics array = []
 
 @description('Optional. The name of logs that will be streamed.')
@@ -236,7 +236,7 @@ module serviceBusNamespace_queues 'queues/deploy.bicep' = [for (queue, index) in
     enableBatchedOperations: contains(queue, 'enableBatchedOperations') ? queue.enableBatchedOperations : true
     enableExpress: contains(queue, 'enableExpress') ? queue.enableExpress : false
     enablePartitioning: contains(queue, 'enablePartitioning') ? queue.enablePartitioning : false
-    lock: contains(queue, 'lock') ? queue.lock : 'NotSpecified'
+    lock: contains(queue, 'lock') ? queue.lock : any(lock)
     lockDuration: contains(queue, 'lockDuration') ? queue.lockDuration : 'PT1M'
     maxDeliveryCount: contains(queue, 'maxDeliveryCount') ? queue.maxDeliveryCount : 10
     maxSizeInMegabytes: contains(queue, 'maxSizeInMegabytes') ? queue.maxSizeInMegabytes : 1024
@@ -268,7 +268,7 @@ module serviceBusNamespace_topics 'topics/deploy.bicep' = [for (topic, index) in
     enableBatchedOperations: contains(topic, 'enableBatchedOperations') ? topic.enableBatchedOperations : true
     enableExpress: contains(topic, 'enableExpress') ? topic.enableExpress : false
     enablePartitioning: contains(topic, 'enablePartitioning') ? topic.enablePartitioning : false
-    lock: contains(topic, 'lock') ? topic.lock : 'NotSpecified'
+    lock: contains(topic, 'lock') ? topic.lock : any(lock)
     maxMessageSizeInKilobytes: contains(topic, 'maxMessageSizeInKilobytes') ? topic.maxMessageSizeInKilobytes : 1024
     maxSizeInMegabytes: contains(topic, 'maxSizeInMegabytes') ? topic.maxSizeInMegabytes : 1024
     requiresDuplicateDetection: contains(topic, 'requiresDuplicateDetection') ? topic.requiresDuplicateDetection : false
@@ -278,7 +278,7 @@ module serviceBusNamespace_topics 'topics/deploy.bicep' = [for (topic, index) in
   }
 }]
 
-resource serviceBusNamespace_lock 'Microsoft.Authorization/locks@2017-04-01' = if (lock != 'NotSpecified') {
+resource serviceBusNamespace_lock 'Microsoft.Authorization/locks@2017-04-01' = if (!empty(lock)) {
   name: '${serviceBusNamespace.name}-${lock}-lock'
   properties: {
     level: lock

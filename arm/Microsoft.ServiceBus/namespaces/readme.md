@@ -34,7 +34,7 @@ This module deploys a service bus namespace resource.
 **Required parameters**
 | Parameter Name | Type | Default Value | Allowed Values | Description |
 | :-- | :-- | :-- | :-- | :-- |
-| `skuName` | string | `'Basic'` | `[Basic, Standard, Premium]` | Name of this SKU. - Basic, Standard, Premium. |
+| `skuName` | string | `'Basic'` | `[Basic, Standard, Premium]` | Name of this SKU. - Basic, Standard, Premium |
 
 **Optional parameters**
 | Parameter Name | Type | Default Value | Allowed Values | Description |
@@ -62,7 +62,7 @@ This module deploys a service bus namespace resource.
 | `tags` | object | `{object}` |  | Tags of the resource. |
 | `topics` | _[topics](topics/readme.md)_ array | `[]` |  | The topics to create in the service bus namespace. |
 | `userAssignedIdentities` | object | `{object}` |  | The ID(s) to assign to the resource. |
-| `virtualNetworkRules` | _[virtualNetworkRules](virtualNetworkRules/readme.md)_ array | `[]` |  | vNet Rules SubnetIds for the Service Bus namespace. |
+| `virtualNetworkRules` | _[virtualNetworkRules](virtualNetworkRules/readme.md)_ array | `[]` |  | VNet rules SubnetIds for the Service Bus namespace. |
 | `zoneRedundant` | bool | `False` |  | Enabling this property creates a Premium Service Bus Namespace in regions supported availability zones. |
 
 **Generated parameters**
@@ -285,10 +285,9 @@ userAssignedIdentities: {
 
 | Output Name | Type | Description |
 | :-- | :-- | :-- |
-| `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the deployed service bus namespace. |
-| `resourceGroupName` | string | The resource group of the deployed service bus namespace. |
-| `resourceId` | string | The resource ID of the deployed service bus namespace. |
+| `name` | string | The name of the deployed service bus namespace |
+| `resourceGroupName` | string | The resource group of the deployed service bus namespace |
+| `resourceId` | string | The resource ID of the deployed service bus namespace |
 | `systemAssignedPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Deployment examples
@@ -334,171 +333,142 @@ module namespaces './Microsoft.ServiceBus/namespaces/deploy.bicep' = {
 
 ```json
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "name": {
-            "value": "<<namePrefix>>-az-sbn-x-002"
-        },
-        "lock": {
-            "value": "CanNotDelete"
-        },
-        "skuName": {
-            "value": "Premium"
-        },
-        "tags": {
-            "value": {}
-        },
-        "roleAssignments": {
-            "value": [
-                {
-                    "roleDefinitionIdOrName": "Reader",
-                    "principalIds": [
-                        "<<deploymentSpId>>"
-                    ]
-                }
-            ]
-        },
-        "disasterRecoveryConfigs": {
-            "value": {}
-        },
-        "migrationConfigurations": {
-            "value": {}
-        },
-        "virtualNetworkRules": {
-            "value": [
-                "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-003"
-            ]
-        },
-        "ipFilterRules": {
-            "value": [
-                {
-                    "filterName": "ipFilter1",
-                    "ipMask": "10.0.1.0/32",
-                    "action": "Accept"
-                },
-                {
-                    "filterName": "ipFilter2",
-                    "ipMask": "10.0.2.0/32",
-                    "action": "Accept"
-                }
-            ]
-        },
-        "authorizationRules": {
-            "value": [
-                {
-                    "name": "RootManageSharedAccessKey",
-                    "rights": [
-                        "Listen",
-                        "Manage",
-                        "Send"
-                    ]
-                },
-                {
-                    "name": "AnotherKey",
-                    "rights": [
-                        "Listen",
-                        "Send"
-                    ]
-                }
-            ]
-        },
-        "queues": {
-            "value": [
-                {
-                    "name": "<<namePrefix>>-az-sbq-x-002",
-                    "roleAssignments": [
-                        {
-                            "roleDefinitionIdOrName": "Reader",
-                            "principalIds": [
-                                "<<deploymentSpId>>"
-                            ]
-                        }
-                    ],
-                    "authorizationRules": [
-                        {
-                            "name": "RootManageSharedAccessKey",
-                            "rights": [
-                                "Listen",
-                                "Manage",
-                                "Send"
-                            ]
-                        },
-                        {
-                            "name": "AnotherKey",
-                            "rights": [
-                                "Listen",
-                                "Send"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "topics": {
-            "value": [
-                {
-                    "name": "<<namePrefix>>-az-sbt-x-001",
-                    "roleAssignments": [
-                        {
-                            "roleDefinitionIdOrName": "Reader",
-                            "principalIds": [
-                                "<<deploymentSpId>>"
-                            ]
-                        }
-                    ],
-                    "authorizationRules": [
-                        {
-                            "name": "RootManageSharedAccessKey",
-                            "rights": [
-                                "Listen",
-                                "Manage",
-                                "Send"
-                            ]
-                        },
-                        {
-                            "name": "AnotherKey",
-                            "rights": [
-                                "Listen",
-                                "Send"
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        "diagnosticLogsRetentionInDays": {
-            "value": 7
-        },
-        "diagnosticStorageAccountId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/adp<<namePrefix>>azsax001"
-        },
-        "diagnosticWorkspaceId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/microsoft.operationalinsights/workspaces/adp-<<namePrefix>>-az-law-x-001"
-        },
-        "diagnosticEventHubAuthorizationRuleId": {
-            "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.EventHub/namespaces/adp-<<namePrefix>>-az-evhns-x-001/AuthorizationRules/RootManageSharedAccessKey"
-        },
-        "diagnosticEventHubName": {
-            "value": "adp-<<namePrefix>>-az-evh-x-001"
-        },
-        "systemAssignedIdentity": {
-            "value": true
-        },
-        "userAssignedIdentities": {
-            "value": {
-                "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001": {}
-            }
-        },
-        "privateEndpoints": {
-            "value": [
-                {
-                    "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints",
-                    "service": "namespace"
-                }
-            ]
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "<<namePrefix>>-az-sbn-x-002"
+    },
+    "skuName": {
+      "value": "Premium"
+    },
+    "tags": {
+      "value": {}
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "name": "<<endpoint-name>>",
+          "service": "namespace",
+          "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>"
         }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "roleDefinitionIdOrName": "Reader",
+          "principalIds": ["<<deploymentSpId>>"]
+        }
+      ]
+    },
+    "disasterRecoveryConfigs": {
+      "value": {}
+    },
+    "migrationConfigurations": {
+      "value": {}
+    },
+    "virtualNetworkRules": {
+      "value": [
+        "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-003"
+      ]
+    },
+    "ipFilterRules": {
+      "value": [
+        {
+          "filterName": "ipFilter1",
+          "ipMask": "10.0.1.0/32",
+          "action": "Accept"
+        },
+        {
+          "filterName": "ipFilter2",
+          "ipMask": "10.0.2.0/32",
+          "action": "Accept"
+        }
+      ]
+    },
+    "authorizationRules": {
+      "value": [
+        {
+          "name": "RootManageSharedAccessKey",
+          "rights": ["Listen", "Manage", "Send"]
+        },
+        {
+          "name": "AnotherKey",
+          "rights": ["Listen", "Send"]
+        }
+      ]
+    },
+    "queues": {
+      "value": [
+        {
+          "name": "<<namePrefix>>-az-sbq-x-002",
+          "roleAssignments": [
+            {
+              "roleDefinitionIdOrName": "Reader",
+              "principalIds": ["<<deploymentSpId>>"]
+            }
+          ],
+          "authorizationRules": [
+            {
+              "name": "RootManageSharedAccessKey",
+              "rights": ["Listen", "Manage", "Send"]
+            },
+            {
+              "name": "AnotherKey",
+              "rights": ["Listen", "Send"]
+            }
+          ]
+        }
+      ]
+    },
+    "topics": {
+      "value": [
+        {
+          "name": "<<namePrefix>>-az-sbt-x-001",
+          "roleAssignments": [
+            {
+              "roleDefinitionIdOrName": "Reader",
+              "principalIds": ["<<deploymentSpId>>"]
+            }
+          ],
+          "authorizationRules": [
+            {
+              "name": "RootManageSharedAccessKey",
+              "rights": ["Listen", "Manage", "Send"]
+            },
+            {
+              "name": "AnotherKey",
+              "rights": ["Listen", "Send"]
+            }
+          ]
+        }
+      ]
+    },
+    "diagnosticLogsRetentionInDays": {
+      "value": 7
+    },
+    "diagnosticStorageAccountId": {
+      "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Storage/storageAccounts/adp<<namePrefix>>azsax001"
+    },
+    "diagnosticWorkspaceId": {
+      "value": "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/microsoft.operationalinsights/workspaces/adp-<<namePrefix>>-az-law-x-001"
+    },
+    "diagnosticEventHubAuthorizationRuleId": {
+      "value": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.EventHub/namespaces/adp-<<namePrefix>>-az-evhns-x-001/AuthorizationRules/RootManageSharedAccessKey"
+    },
+    "diagnosticEventHubName": {
+      "value": "adp-<<namePrefix>>-az-evh-x-001"
+    },
+    "systemAssignedIdentity": {
+      "value": true
+    },
+    "userAssignedIdentities": {
+      "value": {
+        "/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001": {}
+      }
     }
+  }
 }
 
 ```
@@ -514,9 +484,15 @@ module namespaces './Microsoft.ServiceBus/namespaces/deploy.bicep' = {
   name: '${uniqueString(deployment().name)}-namespaces'
   params: {
     name: '<<namePrefix>>-az-sbn-x-002'
-    lock: 'CanNotDelete'
     skuName: 'Premium'
     tags: {}
+    privateEndpoints: [
+      {
+        name: '<<endpoint-name>>'
+        service: 'namespace'
+        subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>'
+      }
+    ]
     roleAssignments: [
       {
         roleDefinitionIdOrName: 'Reader'
@@ -628,12 +604,6 @@ module namespaces './Microsoft.ServiceBus/namespaces/deploy.bicep' = {
     userAssignedIdentities: {
       '/subscriptions/<<subscriptionId>>/resourcegroups/validation-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/adp-<<namePrefix>>-az-msi-x-001': {}
     }
-    privateEndpoints: [
-      {
-        subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints'
-        service: 'namespace'
-      }
-    ]
   }
 }
 ```
