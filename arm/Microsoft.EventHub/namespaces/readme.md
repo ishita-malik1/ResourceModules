@@ -340,7 +340,6 @@ module namespaces './Microsoft.EventHub/namespaces/deploy.bicep' = {
     "privateEndpoints": {
       "value": [
         {
-          "name": "<<endpoint-name>>",
           "service": "namespace",
           "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>"
         }
@@ -452,7 +451,6 @@ module namespaces './Microsoft.EventHub/namespaces/deploy.bicep' = {
     lock: 'CanNotDelete'
     privateEndpoints: [
       {
-        name: '<<endpoint-name>>'
         service: 'namespace'
         subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>'
       }
