@@ -5,7 +5,7 @@ param name string = ''
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Required. Name of this SKU. - Basic, Standard, Premium')
+@description('Required. Name of this SKU. - Basic, Standard, Premium.')
 @allowed([
   'Basic'
   'Standard'
@@ -325,14 +325,17 @@ module serviceBusNamespace_rbac '.bicep/nested_roleAssignments.bicep' = [for (ro
   }
 }]
 
-@description('The resource ID of the deployed service bus namespace')
+@description('The resource ID of the deployed service bus namespace.')
 output resourceId string = serviceBusNamespace.id
 
-@description('The resource group of the deployed service bus namespace')
+@description('The resource group of the deployed service bus namespace.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The name of the deployed service bus namespace')
+@description('The name of the deployed service bus namespace.')
 output name string = serviceBusNamespace.name
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedPrincipalId string = systemAssignedIdentity && contains(serviceBusNamespace.identity, 'principalId') ? serviceBusNamespace.identity.principalId : ''
+
+@description('The location the resource was deployed into.')
+output location string = serviceBusNamespace.location

@@ -34,7 +34,7 @@ This module deploys a service bus namespace resource.
 **Required parameters**
 | Parameter Name | Type | Default Value | Allowed Values | Description |
 | :-- | :-- | :-- | :-- | :-- |
-| `skuName` | string | `'Basic'` | `[Basic, Standard, Premium]` | Name of this SKU. - Basic, Standard, Premium |
+| `skuName` | string | `'Basic'` | `[Basic, Standard, Premium]` | Name of this SKU. - Basic, Standard, Premium. |
 
 **Optional parameters**
 | Parameter Name | Type | Default Value | Allowed Values | Description |
@@ -285,9 +285,10 @@ userAssignedIdentities: {
 
 | Output Name | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the deployed service bus namespace |
-| `resourceGroupName` | string | The resource group of the deployed service bus namespace |
-| `resourceId` | string | The resource ID of the deployed service bus namespace |
+| `location` | string | The location the resource was deployed into. |
+| `name` | string | The name of the deployed service bus namespace. |
+| `resourceGroupName` | string | The resource group of the deployed service bus namespace. |
+| `resourceId` | string | The resource ID of the deployed service bus namespace. |
 | `systemAssignedPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Deployment examples
