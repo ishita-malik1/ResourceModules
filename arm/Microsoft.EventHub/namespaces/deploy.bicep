@@ -126,6 +126,9 @@ param diagnosticMetricsToEnable array = [
   'AllMetrics'
 ]
 
+@description('Optional. The name of the diagnostic setting, if deployed.')
+param diagnosticSettingsName string = '${name}-diagnosticSettings'
+
 var maxNameLength = 50
 var uniqueEventHubNamespaceUntrim = uniqueString('EventHub Namespace${baseTime}')
 var uniqueEventHubNamespace = length(uniqueEventHubNamespaceUntrim) > maxNameLength ? substring(uniqueEventHubNamespaceUntrim, 0, maxNameLength) : uniqueEventHubNamespaceUntrim
@@ -140,9 +143,6 @@ var networkAcls_var = {
   virtualNetworkRules: !empty(networkAcls) ? virtualNetworkRules : null
   ipRules: !empty(networkAcls) ? (length(networkAcls.ipRules) > 0 ? networkAcls.ipRules : null) : null
 }
-
-@description('Optional. The name of the diagnostic setting, if deployed.')
-param diagnosticSettingsName string = '${name}-diagnosticSettings'
 
 var diagnosticsLogs = [for category in diagnosticLogCategoriesToEnable: {
   category: category
@@ -169,6 +169,8 @@ var identity = identityType != 'None' ? {
   type: identityType
   userAssignedIdentities: !empty(userAssignedIdentities) ? userAssignedIdentities : null
 } : null
+
+var enableReferencedModulesTelemetry = false
 
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
@@ -273,17 +275,23 @@ module eventHubNamespace_authorizationRules 'authorizationRules/deploy.bicep' = 
   }
 }]
 
-module eventHubNamespace_privateEndpoints '.bicep/nested_privateEndpoint.bicep'= [for (endpoint, index) in privateEndpoints:{
-  name: '${uniqueString(deployment().name, location)}-EvhbNamespace-PrivateEndpoint-${index}'
+module eventHubNamespace_privateEndpoints '../../Microsoft.Network/privateEndpoints/deploy.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
+  name: '${uniqueString(deployment().name, location)}-EventHubNamespace-PrivateEndpoint-${index}'
   params: {
-    privateEndpointResourceId: eventHubNamespace.id
-    privateEndpointVnetLocation: (empty(privateEndpoints) ? 'dummy' : reference(split(endpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)
-    privateEndpointObj: {
-      name: '<<endpoint-name>>'
-      service: 'namespace'
-      subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>'
-    }
-    tags: tags
+    groupIds: [
+      privateEndpoint.service
+    ]
+    name: contains(privateEndpoint, 'name') ? privateEndpoint.name : 'pe-${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.service}-${index}'
+    serviceResourceId: eventHubNamespace.id
+    subnetResourceId: privateEndpoint.subnetResourceId
+    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    location: reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
+    lock: contains(privateEndpoint, 'lock') ? privateEndpoint.lock : lock
+    privateDnsZoneGroups: contains(privateEndpoint, 'privateDnsZoneGroups') ? privateEndpoint.privateDnsZoneGroups : []
+    roleAssignments: contains(privateEndpoint, 'roleAssignments') ? privateEndpoint.roleAssignments : []
+    tags: contains(privateEndpoint, 'tags') ? privateEndpoint.tags : {}
+    manualPrivateLinkServiceConnections: contains(privateEndpoint, 'manualPrivateLinkServiceConnections') ? privateEndpoint.manualPrivateLinkServiceConnections : []
+    customDnsConfigs: contains(privateEndpoint, 'customDnsConfigs') ? privateEndpoint.customDnsConfigs : []
   }
 }]
 
