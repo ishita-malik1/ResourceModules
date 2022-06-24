@@ -594,7 +594,11 @@ module accounts './Microsoft.CognitiveServices/accounts/deploy.bicep' = {
         "value": [
           {
             "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints",
-            "service": "namespace"
+            "service": "blob"
+          },
+          {
+            "subnetResourceId": "/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints",
+            "service": "table"
           }
         ]
       }
@@ -647,7 +651,11 @@ module accounts './Microsoft.CognitiveServices/accounts/deploy.bicep' = {
     privateEndpoints: [
       {
         subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints'
-        service: 'namespace'
+        service: 'blob'
+      }
+      {
+        subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/adp-<<namePrefix>>-az-vnet-x-001/subnets/<<namePrefix>>-az-subnet-x-005-privateEndpoints'
+        service: 'table'
       }
     ]
   }
