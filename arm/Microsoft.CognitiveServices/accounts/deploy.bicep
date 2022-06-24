@@ -181,6 +181,8 @@ var identity = identityType != 'None' ? {
   userAssignedIdentities: !empty(userAssignedIdentities) ? userAssignedIdentities : null
 } : null
 
+var enableReferencedModulesTelemetry = false
+
 resource defaultTelemetry 'Microsoft.Resources/deployments@2021-04-01' = if (enableDefaultTelemetry) {
   name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
   properties: {
@@ -239,17 +241,23 @@ resource cognitiveServices_diagnosticSettingName 'Microsoft.Insights/diagnostics
   scope: cognitiveServices
 }
 
-module cognitiveServices_privateEndpoints '.bicep/nested_privateEndpoint.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
+module cognitiveServices_privateEndpoints '../../Microsoft.Network/privateEndpoints/deploy.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
   name: '${uniqueString(deployment().name, location)}-CognitiveServices-PrivateEndpoint-${index}'
   params: {
-    privateEndpointResourceId: cognitiveServices.id
-    privateEndpointVnetLocation: (empty(privateEndpoints) ? 'dummy' : reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)
-    privateEndpointObj: {
-      name: '<<endpoint-name>>'
-      service: 'namespace'
-      subnetResourceId: '/subscriptions/<<subscriptionId>>/resourceGroups/validation-rg/providers/Microsoft.Network/virtualNetworks/<<vnet-name>>/subnets/<<subnet-name>>'
-    }
-    tags: tags
+    groupIds: [
+      privateEndpoint.service
+    ]
+    name: contains(privateEndpoint, 'name') ? privateEndpoint.name : 'pe-${last(split(cognitiveServices.id, '/'))}-${privateEndpoint.service}-${index}'
+    serviceResourceId: cognitiveServices.id
+    subnetResourceId: privateEndpoint.subnetResourceId
+    enableDefaultTelemetry: enableReferencedModulesTelemetry
+    location: reference(split(privateEndpoint.subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location
+    lock: contains(privateEndpoint, 'lock') ? privateEndpoint.lock : lock
+    privateDnsZoneGroups: contains(privateEndpoint, 'privateDnsZoneGroups') ? privateEndpoint.privateDnsZoneGroups : []
+    roleAssignments: contains(privateEndpoint, 'roleAssignments') ? privateEndpoint.roleAssignments : []
+    tags: contains(privateEndpoint, 'tags') ? privateEndpoint.tags : {}
+    manualPrivateLinkServiceConnections: contains(privateEndpoint, 'manualPrivateLinkServiceConnections') ? privateEndpoint.manualPrivateLinkServiceConnections : []
+    customDnsConfigs: contains(privateEndpoint, 'customDnsConfigs') ? privateEndpoint.customDnsConfigs : []
   }
 }]
 

@@ -9,20 +9,6 @@
         "metadata": {
           "description": "A 3-5 character length string, included in the resources names"
         }
-      },
-      {
-        "name": "vnet-name",
-        "value": "ismalik",
-        "metadata": {
-          "description": "Name for the VNet"
-        }
-      },
-      {
-        "name": "subnet-name",
-        "value": "subnet-1",
-        "metadata": {
-          "description": "Name for the subnet in the VNet."
-        }
       }
     ]
   },
