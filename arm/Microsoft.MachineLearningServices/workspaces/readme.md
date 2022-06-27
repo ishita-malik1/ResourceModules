@@ -413,7 +413,6 @@ userAssignedIdentities: {
         }
     }
 }
-
 ```
 
 </details>
@@ -502,7 +501,6 @@ module workspaces './Microsoft.MachineLearningServices/workspaces/deploy.bicep' 
     }
   }
 }
-
 ```
 
 </details>
