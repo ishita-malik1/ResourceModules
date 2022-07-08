@@ -38,9 +38,9 @@ They can be deployed in different configurations just by changing the input para
 
 # General guidelines
 
-- All resource modules in the 'arm' folder should not allow deployment loops on the top-level resource but may optionally allow deployment loops on their child resources.
+- All resource modules in the 'modules' folder should not allow deployment loops on the top-level resource but may optionally allow deployment loops on their child resources.
   > **Example:** The storage account module allows the deployment of a single storage account with, optionally, multiple blob containers, multiple file shares, multiple queues and/or multiple tables.
-- The 'constructs' folder contains examples of deployment logic built on top of resource modules included in the 'arm' folder, allowing for example, deployment loops on top-level resources.
+- The 'constructs' folder contains examples of deployment logic built on top of resource modules included in the 'modules' folder, allowing for example, deployment loops on top-level resources.
   > **Example:** The VirtualNetworkPeering construct leverages the VirtualNetworkPeering module to deploy multiple virtual network peering connections at once.
 - Where the resource type in question supports it, the module should have support for:
   1. **Diagnostic logs** and **metrics** (you can have them sent to one ore more of the following destination types: storage account, log analytics and event hub).
@@ -60,10 +60,10 @@ They can be deployed in different configurations just by changing the input para
 A **CARML module** consists of
 
 - The Bicep template deployment file (`deploy.bicep`).
-- One or multiple template parameters files (`*parameters.json`) that will be used for testing, located in the `.parameters` subfolder.
+- One or multiple template parameters files (`*parameters.json`) that will be used for testing, located in the `.test` subfolder.
 - A `readme.md` file which describes the module itself.
 
-A module usually represents a single resource or a set of closely related resources. For example, a storage account and the associated lock or virtual machine and network interfaces. Modules are located in the `arm` folder.
+A module usually represents a single resource or a set of closely related resources. For example, a storage account and the associated lock or virtual machine and network interfaces. Modules are located in the `modules` folder.
 
 Also, each module should be implemented with all capabilities it and its children support. This includes
 - `Locks`
@@ -109,7 +109,7 @@ Use the following naming standard for module files and folders:
   └─ <service>
       ├─ .bicep
       |  ├─ nested_extensionResource1.bicep
-      ├─ .parameters
+      ├─ .test
       |  └─ parameters.json
       ├─ deploy.bicep
       └─ readme.md
@@ -121,7 +121,7 @@ Use the following naming standard for module files and folders:
   >└─ sites
   >    ├─ .bicep
   >    |  └─ nested_roleAssignments.bicep
-  >    ├─ .parameters
+  >    ├─ .test
   >    |  └─ parameters.json
   >    ├─ deploy.bicep
   >    └─ readme.md
@@ -331,7 +331,7 @@ The Private Endpoint deployment has 2 elements. A module that contains the imple
 #### 1st element in main resource
 
 ```bicep
-@description('Optional. Configuration Details for private endpoints.')
+@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints array = []
 
 module <mainResource>_privateEndpoints 'https://github.com/Azure/ResourceModules/blob/main/Microsoft.Network/privateEndpoints/deploy.bicep' = [for (privateEndpoint, index) in privateEndpoints: {
